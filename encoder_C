@@ -1,0 +1,42 @@
+import RPi.GPIO as IO
+import time
+
+
+
+pwmPin = 19
+dirPin = 13
+encPinA = 23
+encPinB = 24
+
+
+
+IO.setmode(IO.BCM)
+IO.setwarnings(False)
+IO.setup(encPinA, IO.IN, pull_up_down=IO.PUD_UP)
+IO.setup(encPinB, IO.IN, pull_up_down=IO.PUD_UP)
+IO.setup(pwmPin,IO.OUT)
+IO.setup(dirPin,IO.OUT)
+
+
+
+p = IO.PWM(19,100)
+p.start(0)
+
+
+
+encoderPos = 0
+
+def encoderA(channel):
+    global encoderPos
+    if IO.input(encPinA) == IO.input(encPinB):
+        encoderPos += 1
+    else:
+        encoderPos -= 1
+   
+def encoderB(channel):
+    global encoderPos
+    if IO.input(encPinA) == IO.input(encPinB):
+        encoderPos -= 1
+    else:
+        encoderPos += 1
+
