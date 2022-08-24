@@ -41,8 +41,8 @@ def encoderB(channel):
         encoderPos += 1
 
 targetDeg= 360.
-ratio = 360./270./64.
-Kp = 1000.
+ratio = 360./139./52.
+Kp = 50.
 Kd = 0.
 Ki = 0.
 dt = 0.
