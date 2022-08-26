@@ -39,6 +39,10 @@ def encoderB(channel):
         encoderPos -= 1
     else:
         encoderPos += 1
+        
+
+IO.add_event_detect(encPinA, IO.BOTH, callback=encoderA)
+IO.add_event_detect(encPinB, IO.BOTH, callback=encoderB)
 
 targetDeg= 360.
 ratio = 360./139./52.
