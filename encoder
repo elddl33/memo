@@ -1,0 +1,97 @@
+import re
+from termios import TIOCPKT
+import RPi.GPIO as IO
+import time
+
+
+
+class Encoder:
+
+    def __init__(self, min=-90, max=90, init_pos = 0):
+        self.min = min
+        self.max = max
+        self.targetDeg = init_pos
+        self.servo_pos(0)
+
+        print("----------Encoder----------")
+        print("Degree: ", self.min, "~", self.max)
+
+    def encoderA(channel):
+        global encoderPos
+        if IO.input(encPinA) == IO.input(encPinB):
+            encoderPos += 1
+        else:
+            encoderPos -= 1
+    
+    def encoderB(channel):
+        global encoderPos
+        if IO.input(encPinA) == IO.input(encPinB):
+            encoderPos -= 1
+        else:
+            encoderPos += 1
+
+    def servo_pos(self, tik):
+        self.targetDeg += tik
+
+        if self.targetDeg > self.max:
+            self.targetDeg = self.max
+        elif self.targetDeg < self.min:
+            self.targetDeg = self.min
+
+        motorDeg = encoderPos * ratio
+        error = targetDeg - motorDeg
+        de = error-error_prev
+        dt = time.time() - time_prev
+        control = Kp*error + Kd*de/dt + Ki*error*dt
+
+        error_prev = error
+        time_prev = time.time()
+   
+        IO.output(dirPin, control >= 0)
+        p.ChangeDutyCycle(min(abs(control), 100))
+        
+        
+        #print('P-term = %7.1f, D-term = %7.1f, I-term = %7.1f' %(Kp*error, Kd*de/dt, Ki*de*dt))
+        #print('time = %6.3f, enc = %d, deg = %5.1f, err = %5.1f, ctrl = %7.1f' %(time.time()-start_time, encoderPos, motorDeg, error, control))
+        #print('%f, %f' %(de, dt))
+        
+    
+        #if abs(error) <= tolerance:
+        #    IO.output(dirPin, control >= 0)
+        #    p.ChangeDutyCycle(0)
+        #    break
+    
+        time.sleep(dt_sleep)
+
+        return motorDeg
+
+
+
+'''
+while True:
+    motorDeg = encoderPos * ratio
+
+    error = targetDeg - motorDeg
+    de = error-error_prev
+    dt = time.time() - time_prev
+    control = Kp*error + Kd*de/dt + Ki*error*dt
+
+    error_prev = error
+    time_prev = time.time()
+   
+    IO.output(dirPin, control >= 0)
+    p.ChangeDutyCycle(min(abs(control), 100))
+    
+    
+    #print('P-term = %7.1f, D-term = %7.1f, I-term = %7.1f' %(Kp*error, Kd*de/dt, Ki*de*dt))
+    #print('time = %6.3f, enc = %d, deg = %5.1f, err = %5.1f, ctrl = %7.1f' %(time.time()-start_time, encoderPos, motorDeg, error, control))
+    #print('%f, %f' %(de, dt))
+    
+ 
+    if abs(error) <= tolerance:
+        IO.output(dirPin, control >= 0)
+        p.ChangeDutyCycle(0)
+        break
+   
+    time.sleep(dt_sleep)
+'''
