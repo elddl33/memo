@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset = "UTF-8">
+		<title>Home</title>
+		<script language="javascript" type="text/javascript" src="./static/p5.min.js"></script>
+		<script language="javascript" type="text/javascript" src="./static/p5test.js?ver=1"></script>
+		<script type="text/javascript" src="./static/jscode.js?ver=1"></script>
+		<script type="text/javascript" src="./static/uicontroll.js?ver=1"></script>
+		<script type="text/javascript" src="./static/camera.js?ver=4"></script>
+		<link rel="stylesheet" href = "{{ url_for('static', filename='style.css')}}">
+        <script>
+            window.onload = function(){
+	            done = true;
+	            onloadcam(0);
+	            onloadcam(1);
+		    //setInterval(get_gas_sensor, 10000);
+		    //setInterval(get_dht_sensor, 10000, 0);
+		    //setInterval(get_dht_sensor, 20000, 1);
+		    //setInterval(radar_controll, 1500);
+	            //fetch("/start");
+	            console.log("Load.. done");
+	        }
+        </script>
+	</head>
+	<body>
+		<dir class = "container">    
+			<div class="list-wrap">
+        <ul>
+            <li>
+                <p class="tit">RGB Camera</p>
+                <div class="cont">
+		     <img id="cam1" onload="onloadcam(1);" src="{{url_for('static', filename = 'cameraload.png')}}"width="400"height="250">
+		</div>
+            </li>
+            <li>
+                <p class="tit">Themal Camera</p>
+                <div class="cont">
+		    <img id="cam0" onload="onloadcam(0);" src="{{url_for('static', filename = 'cameraload.png')}}"width="400"height="250">
+		</div>
+            </li>
+            <li>
+                <p class="tit">Radar</p>
+                <div class="cont">
+			<main>
+			</main>
+                </div>
+            </li>
+        </ul>
+        <ul class="bot">
+            <li class="border info">
+                <p class="tit">Info</p>
+                <div class="cont">
+                    <dl>
+                        <dt>outside temperature</dt>
+                        <dd id="dht0">25</dd>
+                        <dt>inside temperature</dt>
+                        <dd id="dht1">25</dd>
+                        <dt>air quiality</dt>
+                        <dd><span id="gas">47</span></dd>
+                    </dl>
+                </div>
+            </li>
+            <li class="border drive">
+                <p class="tit">Drive Control</p>
+                <div class="cont">
+                    <span>L Speed: <em id="L_Speed">0</em></span>
+                    <span>R Speed: <em id="R_Speed">0</em></span>
+                </div>
+            </li>
+            <li class="border arm">
+                <p class="tit">Arm Control</p>
+                <div class="cont">
+                    <div class="txt-group">
+                        <span id="Grip">Grip: 0</span>
+                        <span id="Wrist">Wrist: 0</span>
+                        <span id="Wrist_Roll">Wrist_Roll: 0</span>
+                        <span id="Elbow">Elbow: 0</span>
+                        <span id="Shoulder">Shoulder: 0</span>
+                        <span id="Waist">Waist: 0</span>
+                    </div>
+                </div>
+            </li>
+            <li class="border option">
+                    <p class="tit">Option</p>
+                    <div class="cont">
+                        <ul>
+                            <li>
+                                <strong class="dl-tit">Camera Setting</strong>
+                                <dl>
+                                    <dt>State</dt>
+                                    <dd onclick="camera_state()" id="State_test">off</dd>
+                                    <dt>Thermal</dt>
+                                    <dd class="select-area">
+                                        <select id="select00">
+                                            <option value="0">cam0</option>
+                                            <option value="1">cam1</option>
+                                            <option value="2">cam2</option>
+                                        </select>
+                                    </dd>
+                                    <dt>RGB</dt>
+                                    <dd class="select-area">
+                                        <select id="select01">
+                                            <option value="0">cam0</option>
+                                            <option value="1" selected>cam1</option>
+                                            <option value="2">cam2</option>
+                                        </select>
+                                    </dd>
+                                    <dt>Arm</dt>
+                                    <dd class="select-area">
+                                        <select id="select02">
+                                            <option value="0">cam0</option>
+                                            <option value="1">cam1</option>
+                                            <option value="2" selected>cam2</option>
+                                        </select>
+                                    </dd>
+                                </dl>
+                            </li>
+                            <li>
+                                <strong class="dl-tit">Arm Setting</strong>
+                                <dl>
+                                    <dt>speed</dt>
+                                    <dd><input type="text"size=2 id="a" value=40 onkeyup='set_servospeed()' ></dd>
+                                </dl>
+                            </li>
+                            <li>
+                                <strong class="dl-tit">Radar Setting</strong>
+                                <dl>
+                                    <dt>State</dt>
+                                    <dd onclick="radar_state()" id="State_test1">off</dd>
+                                </dl>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div id="div_submit">
+                <form name="form_submit">
+                    말할 텍스트 : <input type = "text" name = "txt_query" />
+                    <br>
+                    <br/>
+                    <input type="submit" value="Submit" onclick="send_query()">
+                </form>
+                </div>
+                
+	</body>
+</html>
