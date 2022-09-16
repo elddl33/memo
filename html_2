@@ -1,0 +1,235 @@
+ANYCODINGS.COM
+Home
+Categories 
+About Us
+Contact Us
+Privacy Policy
+Terms & Conditions
+
+
+Audio Livestreaming with Python & Flask
+Questions : Audio Livestreaming with Python & Flask
+I'm currently strugling with my anycodings_flask implementation of a simple live streaming anycodings_flask web application using Python and Flask. It anycodings_flask seems that I'm not able to stream my live anycodings_flask recorded audio from the servers microphone anycodings_flask input to the webpage.
+
+server.py
+
+from flask import Flask, render_template, Response
+import cv2
+import framework
+import pyaudio
+import audio_processing as audioRec
+
+FORMAT = pyaudio.paInt16
+CHANNELS = 1
+RATE = 44100
+CHUNK = 1024
+
+audio = pyaudio.PyAudio()
+
+
+app = Flask(__name__)
+
+
+@app.route('/')
+def index():
+    """Video streaming home page."""
+    return render_template('index.html')
+
+
+# Stream routing
+@app.route('/video_feed')
+def video_feed():
+    """Video streaming route. Put this in the src attribute of an img tag."""
+    return Response(generateVideo(),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+@app.route("/audio_feed")
+def audio_feed():
+    """Audio streaming route. Put this in the src attribute of an audio tag."""
+    return Response(generateAudio(),
+                    mimetype="audio/x-wav")
+
+
+# Stream generating
+def generateVideo():
+    """Video streaming generator function."""
+    cap = cv2.VideoCapture(0)
+    while (cap.isOpened()):
+        ret, frame = cap.read()
+        output = framework.streamer(frame, 'final')
+        cv2.imwrite('signals/currFrame.jpg', output)
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + open('signals/currFrame.jpg', 'rb').read() + b'\r\n')
+
+
+def generateAudio():
+    """Audio streaming generator function."""
+    currChunk = audioRec.record()
+    data_to_stream = genHeader(44100, 32, 1, 200000) + currChunk
+    yield data_to_stream
+
+    # with open("signals/audio.wav", "rb") as fwav:
+    #     data = fwav.read(1024)
+    #     while data:
+    #         yield data
+    #         data = fwav.read(1024)
+
+
+def genHeader(sampleRate, bitsPerSample, channels, samples):
+    datasize = samples * channels * bitsPerSample // 8
+    o = bytes("RIFF",'ascii')                                               # (4byte) Marks file as RIFF
+    o += (datasize + 36).to_bytes(4,'little')                               # (4byte) File size in bytes excluding this and RIFF marker
+    o += bytes("WAVE",'ascii')                                              # (4byte) File type
+    o += bytes("fmt ",'ascii')                                              # (4byte) Format Chunk Marker
+    o += (16).to_bytes(4,'little')                                          # (4byte) Length of above format data
+    o += (1).to_bytes(2,'little')                                           # (2byte) Format type (1 - PCM)
+    o += (channels).to_bytes(2,'little')                                    # (2byte)
+    o += (sampleRate).to_bytes(4,'little')                                  # (4byte)
+    o += (sampleRate * channels * bitsPerSample // 8).to_bytes(4,'little')  # (4byte)
+    o += (channels * bitsPerSample // 8).to_bytes(2,'little')               # (2byte)
+    o += (bitsPerSample).to_bytes(2,'little')                               # (2byte)
+    o += bytes("data",'ascii')                                              # (4byte) Data Chunk Marker
+    o += (datasize).to_bytes(4,'little')                                    # (4byte) Data size in bytes
+    return o
+
+
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', debug=True, threaded=True)
+audio_processing.py
+
+import pyaudio
+
+FORMAT = pyaudio.paInt16
+CHANNELS = 1
+RATE = 44100
+CHUNK = 1024
+
+audio = pyaudio.PyAudio()
+
+
+def record():
+    # start Recording
+    stream = audio.open(format=FORMAT, channels=CHANNELS,
+                    rate=RATE, input=True,
+                    frames_per_buffer=CHUNK)
+    # print "recording..."
+    data = stream.read(CHUNK)
+    return data
+I'm trying to get the current Chunk of the anycodings_flask microphone using the audio_processing.py and anycodings_flask using yield to respond the current samples anycodings_flask to the user. The video stream works quite anycodings_flask good. Anyone knows, what I'm doing wrong anycodings_flask here?
+
+Kind regards, Felix
+
+PYTHON
+FLASK
+LIVE-STREAMING
+Total Answers 1
+Answers 1 : of Audio Livestreaming with Python & Flask
+Here is a working example with the anycodings_live-streaming inbuilt microphone of your device. Sorry anycodings_live-streaming for not being able to explain much, but anycodings_live-streaming here's what I figured out for my app!
+
+app.py
+
+from flask import Flask, Response,render_template
+import pyaudio
+
+app = Flask(__name__)
+
+
+FORMAT = pyaudio.paInt16
+CHANNELS = 2
+RATE = 44100
+CHUNK = 1024
+RECORD_SECONDS = 5
+
+ 
+audio1 = pyaudio.PyAudio()
+ 
+
+
+def genHeader(sampleRate, bitsPerSample, channels):
+    datasize = 2000*10**6
+    o = bytes("RIFF",'ascii')                                               # (4byte) Marks file as RIFF
+    o += (datasize + 36).to_bytes(4,'little')                               # (4byte) File size in bytes excluding this and RIFF marker
+    o += bytes("WAVE",'ascii')                                              # (4byte) File type
+    o += bytes("fmt ",'ascii')                                              # (4byte) Format Chunk Marker
+    o += (16).to_bytes(4,'little')                                          # (4byte) Length of above format data
+    o += (1).to_bytes(2,'little')                                           # (2byte) Format type (1 - PCM)
+    o += (channels).to_bytes(2,'little')                                    # (2byte)
+    o += (sampleRate).to_bytes(4,'little')                                  # (4byte)
+    o += (sampleRate * channels * bitsPerSample // 8).to_bytes(4,'little')  # (4byte)
+    o += (channels * bitsPerSample // 8).to_bytes(2,'little')               # (2byte)
+    o += (bitsPerSample).to_bytes(2,'little')                               # (2byte)
+    o += bytes("data",'ascii')                                              # (4byte) Data Chunk Marker
+    o += (datasize).to_bytes(4,'little')                                    # (4byte) Data size in bytes
+    return o
+
+@app.route('/audio')
+def audio():
+    # start Recording
+    def sound():
+
+        CHUNK = 1024
+        sampleRate = 44100
+        bitsPerSample = 16
+        channels = 2
+        wav_header = genHeader(sampleRate, bitsPerSample, channels)
+
+        stream = audio1.open(format=FORMAT, channels=CHANNELS,
+                        rate=RATE, input=True,input_device_index=1,
+                        frames_per_buffer=CHUNK)
+        print("recording...")
+        #frames = []
+        first_run = True
+        while True:
+           if first_run:
+               data = wav_header + stream.read(CHUNK)
+               first_run = False
+           else:
+               data = stream.read(CHUNK)
+           yield(data)
+
+    return Response(sound())
+
+@app.route('/')
+def index():
+    """Video streaming home page."""
+    return render_template('index.html')
+
+      
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', debug=True, threaded=True,port=5000)
+index.html - under templates folder in anycodings_live-streaming current directory
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <audio controls>
+        <source src="{{ url_for('audio') }}" type="audio/x-wav;codec=pcm">
+        Your browser does not support the audio element.
+    </audio>
+</body>
+</html>
+0
+Top rated topics
+How to make NSOutputStream redirect to standard output?
+
+Accept and Accept-Charset - Which is superior?
+
+Why are static variables considered evil?
+
+Solution for the ClassCastException due to ClassLoader issue
+
+How to pass integer from one Activity to another?
+
+In TFS, how to Merge Up a branch to the Trunk which wasn't branched from directly?
+
+Android share intent for Facebook
+
