@@ -135,13 +135,11 @@
                 </div>
             </div>
             <div id="div_submit">
-                <form name="form_submit">
-                    말할 텍스트 : <input type = "text" name = "txt_query" />
-                    <br>
-                    <br/>
-                    <input type="submit" value="Submit" onclick="send_query()">
-                </form>
-                </div>
+		<div>
+		    <audio controls>
+			<source id="myaudio" src="{{url_for('audio')}}" type="audio/x-wav;codec=pcm" loop="loop">
+		    </audio>
+		</div>
                 
 	</body>
 </html>
