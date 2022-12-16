@@ -1,0 +1,91 @@
+# my.kv
+<MyLayout>
+
+    GridLayout: 
+        cols: 1
+        rows: 2
+
+        padding: 50
+        spacing: 20
+
+        Image: 
+            id: image_data
+            source: "logo_doos2.png"
+            allow_stretch: True
+            keep_ratio: True
+
+
+        GridLayout: 
+            cols: 2 
+            rows: 10
+            padding: 10
+            spacing: 10
+            Label:
+                text: "DesktopID"
+
+            Label:
+                id: desktop_id
+                text: "?"
+
+            Label:
+                text: "Today"
+
+            Label:
+                id: today_data
+                text: "0"
+
+            Label:
+                text: "DOOS_time"
+
+            Label:
+                id: DOOS_time_data
+                text: "0"
+
+            Label:
+                text: "PC_time"
+
+            Label:
+                id: PC_time_data
+                text: "0"
+
+            Label:
+                text: "Height"
+                    
+            Label:
+                id: height_data
+                text: "Heightdata"
+
+            Label:
+                text: "Period"
+
+            Label:
+                id: period_data
+                text: "Perioddata"
+
+            Label:
+                text: "Direction"
+
+            Label:
+                id: direction_data
+                text: "Directiondata"
+
+            Label:
+                text: "latitude"
+
+            Label:
+                id: latitude_data
+                text: "latitudedata"
+
+            Label:
+                text: "longitude"
+
+            Label:
+                id: longitude_data
+                text: "longitudedata"
+
+            TextInput:
+                id: text_input
+
+            Button:
+                text: "Update"
+                on_press: root.update()
