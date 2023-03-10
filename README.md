@@ -53,6 +53,7 @@ export ROS_MASTER_URI=htcatkin_maketp://192.168.0.141:11311
 cd ~/catkin_ws/src
 catkin_create_pkg smart rospy roscpp std_msgs
 cd ~/catkin_ws
+//delete bulid and devel files in catkin_ws
 catkin_make
 ```
 
