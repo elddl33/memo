@@ -1,0 +1,36 @@
+import smbus
+import time
+
+# Define the I2C bus number and MPU9250 address
+bus = smbus.SMBus(1)
+address = 0x68
+
+# MPU9250 register addresses
+PWR_MGMT_1 = 0x6B
+GYRO_XOUT_H = 0x43
+GYRO_XOUT_L = 0x44
+GYRO_YOUT_H = 0x45
+GYRO_YOUT_L = 0x46
+GYRO_ZOUT_H = 0x47
+GYRO_ZOUT_L = 0x48
+
+# Wake up the MPU9250
+bus.write_byte_data(address, PWR_MGMT_1, 0)
+
+# Read and convert the raw gyro data
+def read_gyro():
+    gyro_x_raw = bus.read_byte_data(address, GYRO_XOUT_H) << 8 | bus.read_byte_data(address, GYRO_XOUT_L)
+    gyro_y_raw = bus.read_byte_data(address, GYRO_YOUT_H) << 8 | bus.read_byte_data(address, GYRO_YOUT_L)
+    gyro_z_raw = bus.read_byte_data(address, GYRO_ZOUT_H) << 8 | bus.read_byte_data(address, GYRO_ZOUT_L)
+
+    gyro_x = gyro_x_raw / 131.0
+    gyro_y = gyro_y_raw / 131.0
+    gyro_z = gyro_z_raw / 131.0
+
+    return gyro_x, gyro_y, gyro_z
+
+# Main loop to continuously read and print the gyro data
+while True:
+    gyro_x, gyro_y, gyro_z = read_gyro()
+    print(f"Gyro X: {gyro_x:.2f} dps, Gyro Y: {gyro_y:.2f} dps, Gyro Z: {gyro_z:.2f} dps")
+    time.sleep(0.1)
