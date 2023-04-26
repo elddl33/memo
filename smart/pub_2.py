@@ -2,6 +2,7 @@
 
 import rospy
 from std_msgs.msg import String
+import serial
 
 def info_publisher():
     # node reset
