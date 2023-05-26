@@ -7,7 +7,7 @@ https://github.com/addpipe/simple-recorderjs-demo
 ```
 sudo apt autoremove
 
-sudo apt updatecatkin_create_pkg smart rospy roscpp std_msgs
+sudo apt update
 sudo apt upgrade
 
 sudo apt install terminator
