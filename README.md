@@ -36,7 +36,8 @@ sudo apt-get install python-catkin-tools
 
 ```
 ```
-mkdir -p ~/catkin_ws/srccatkin_make
+mkdir -p ~/catkin_ws/src
+catkin_make
 cd ~/catkin_ws/src
 catkin_init_workspace
 cd ~/catkin_ws/
