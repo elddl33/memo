@@ -17,17 +17,11 @@ sudo apt install thonny
 
 # install ROS
 ```
-sudo apt update
-sudo apt upgrade
+git clone https://github.com/jugfk/installROS.git
+cd installROS
+chmod +x install-ros.sh
+./install-ros.sh
 
-sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
-sudo apt-get update
-sudo apt-get install ros-melodic-desktop-full
-sudo apt-get install python-rosdep
-sudo rosdep init
-rosdep update
-echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
-source ~/.bashrc
 
 sudo apt-get install python-catkin-tools
 ```
